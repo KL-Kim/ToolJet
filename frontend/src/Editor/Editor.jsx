@@ -437,8 +437,9 @@ class Editor extends React.Component {
 
   setAppDefinitionFromVersion = (version) => {
     this.appDefinitionChanged(defaults(version.definition, this.defaultDefinition), {
-      skipAutoSave: true,
+      skipAutoSave: false,
       skipYmapUpdate: true,
+      changedBySelectingVersion: true,
     });
     this.setState({
       editingVersion: version,
@@ -570,7 +571,7 @@ class Editor extends React.Component {
   };
 
   appDefinitionChanged = (newDefinition, opts = {}) => {
-    if (isEqual(this.state.appDefinition, newDefinition)) return;
+    if (isEqual(this.state.appDefinition, newDefinition) && !opts?.changedBySelectingVersion) return;
     if (config.ENABLE_MULTIPLAYER_EDITING && !opts.skipYmapUpdate) {
       this.props.ymap?.set('appDef', { newDefinition, editingVersionId: this.state.editingVersion?.id });
     }
